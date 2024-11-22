@@ -5,10 +5,10 @@
 use crate::{
     prelude::{fmt, Arc, Box, FromStr, Rc, String, ToString},
     types::{DelayType, Encoding},
-    AllBlocks, Buffer, ConcatStrings, Const, CoreBlocks, Count, Decode, DecodeCsv, DecodeHex,
-    DecodeJson, Delay, Drop, Encode, EncodeCsv, EncodeHex, EncodeJson, FlowBlocks, HashBlocks,
-    IoBlocks, MathBlocks, Random, ReadDir, ReadEnv, ReadFile, ReadSocket, ReadStdin, SplitString,
-    SysBlocks, TextBlocks, WriteFile, WriteSocket, WriteStderr, WriteStdout,
+    Add, AllBlocks, Buffer, ConcatStrings, Const, CoreBlocks, Count, Decode, DecodeCsv, DecodeHex,
+    DecodeJson, Delay, Div, Drop, Encode, EncodeCsv, EncodeHex, EncodeJson, FlowBlocks, HashBlocks,
+    IoBlocks, MathBlocks, Mul, Random, ReadDir, ReadEnv, ReadFile, ReadSocket, ReadStdin,
+    SplitString, Sub, SysBlocks, TextBlocks, WriteFile, WriteSocket, WriteStderr, WriteStdout,
 };
 use protoflow_core::{
     Block, BlockID, BlockResult, BoxedBlockType, InputPort, Message, OutputPort, PortID,
@@ -239,7 +239,23 @@ impl IoBlocks for System {
     }
 }
 
-impl MathBlocks for System {}
+impl MathBlocks for System {
+    fn add(&mut self) -> Add {
+        self.0.block(Add::with_system(self))
+    }
+
+    fn div(&mut self) -> Div {
+        self.0.block(Div::with_system(self))
+    }
+
+    fn mul(&mut self) -> Mul {
+        self.0.block(Mul::with_system(self))
+    }
+
+    fn sub(&mut self) -> Sub {
+        self.0.block(Sub::with_system(self))
+    }
+}
 
 #[cfg(not(feature = "std"))]
 impl SysBlocks for System {}

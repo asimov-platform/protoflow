@@ -1,0 +1,21 @@
+sequenceDiagram
+    autonumber
+    participant BlockA as Another block
+    participant Sub.input as Sub.input port
+    participant Sub as Sub block
+    participant Sub.output as Sub.output port
+    participant BlockB as Another block
+
+    BlockA-->>Sub: Connect
+    Sub-->>BlockB: Connect
+
+    loop Sub process
+        BlockA->>Sub: Message
+        Sub->>Sub: Sub numbers
+        Sub->>BlockB: Message
+    end
+
+    BlockA-->>Sub: Disconnect
+    Sub-->>Sub.input: Close
+    Sub-->>Sub.output: Close
+    Sub-->>BlockB: Disconnect

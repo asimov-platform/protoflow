@@ -34,6 +34,10 @@ pub enum BlockTag {
     EncodeHex,
     EncodeJson,
     // MathBlocks
+    Add,
+    Div,
+    Mul,
+    Sub,
     // SysBlocks
     #[cfg(feature = "std")]
     ReadDir,
@@ -91,6 +95,10 @@ impl BlockTag {
             Encode => "Encode",
             EncodeHex => "EncodeHex",
             EncodeJson => "EncodeJSON",
+            Add => "Add",
+            Div => "Div",
+            Mul => "Mul",
+            Sub => "Sub",
             #[cfg(feature = "std")]
             ReadDir => "ReadDir",
             #[cfg(feature = "std")]
@@ -142,6 +150,10 @@ impl FromStr for BlockTag {
             "Encode" => Encode,
             "EncodeHex" => EncodeHex,
             "EncodeJSON" => EncodeJson,
+            "Add" => Add,
+            "Div" => Div,
+            "Mul" => Mul,
+            "Sub" => Sub,
             #[cfg(feature = "std")]
             "ReadDir" => ReadDir,
             #[cfg(feature = "std")]
@@ -204,6 +216,10 @@ impl BlockInstantiation for BlockTag {
             Encode => Box::new(super::Encode::<String>::with_system(system, None)),
             EncodeHex => Box::new(super::EncodeHex::with_system(system)),
             EncodeJson => Box::new(super::EncodeJson::with_system(system)),
+            Add => Box::new(super::Add::with_system(system)),
+            Div => Box::new(super::Div::with_system(system)),
+            Mul => Box::new(super::Mul::with_system(system)),
+            Sub => Box::new(super::Sub::with_system(system)),
             #[cfg(feature = "std")]
             ReadDir => Box::new(super::ReadDir::with_system(system)),
             #[cfg(feature = "std")]

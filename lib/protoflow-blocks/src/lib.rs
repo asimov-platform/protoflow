@@ -76,6 +76,10 @@ pub fn build_stdio_system(
         "EncodeHex" => EncodeHex::build_system(config)?,
         "EncodeJSON" => EncodeJson::build_system(config)?,
         // MathBlocks
+        "Add" => Add::build_system(config)?,
+        "Div" => Div::build_system(config)?,
+        "Mul" => Mul::build_system(config)?,
+        "Sub" => Sub::build_system(config)?,
         // SysBlocks
         "ReadDir" => ReadDir::build_system(config)?,
         "ReadEnv" => ReadEnv::<String>::build_system(config)?,

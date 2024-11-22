@@ -4,13 +4,13 @@ use protoflow::{
     blocks::{Const, Drop},
     runtimes::StdRuntime,
     transports::MpscTransport,
-    Runtime, System,
+    System, SystemExecution,
 };
 
 #[test]
 fn execute_mpsc_transport() -> Result<(), ()> {
     let transport = MpscTransport::new();
-    let mut runtime = StdRuntime::new(transport).unwrap();
+    let runtime = StdRuntime::new(transport).unwrap();
     let mut system = System::new(&runtime);
     let constant = system.block(Const {
         output: system.output(),
@@ -18,7 +18,7 @@ fn execute_mpsc_transport() -> Result<(), ()> {
     });
     let blackhole = system.block(Drop::new(system.input()));
     system.connect(&constant.output, &blackhole.input);
-    let process = runtime.execute(system).unwrap();
+    let process = SystemExecution::execute(system).unwrap();
     process.join().unwrap();
     Ok(())
 }

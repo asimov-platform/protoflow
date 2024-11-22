@@ -47,6 +47,9 @@ pub type Instant = Duration;
 pub use bytes;
 
 #[doc(hidden)]
+pub use parking_lot::RwLock;
+
+#[doc(hidden)]
 pub use prost;
 
 #[doc(hidden)]

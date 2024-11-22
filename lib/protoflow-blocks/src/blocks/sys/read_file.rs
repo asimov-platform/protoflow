@@ -91,6 +91,7 @@ impl StdioSystem for ReadFile {
 #[cfg(test)]
 mod tests {
     extern crate std;
+
     use super::ReadFile;
     use crate::{System, SystemBuilding, SystemExecution};
 
@@ -122,7 +123,7 @@ mod tests {
         system.connect(&path, &read_file.path);
         system.connect(&read_file.output, &output);
 
-        let thrd = std::thread::spawn(move || system.execute().and_then(|p| p.join()).unwrap());
+        let process = system.execute().unwrap();
 
         path.send(&temp_file.path().to_string_lossy().into())
             .unwrap();
@@ -143,6 +144,6 @@ mod tests {
             "want EOS signal after path port is closed"
         );
 
-        thrd.join().unwrap()
+        process.join().unwrap();
     }
 }

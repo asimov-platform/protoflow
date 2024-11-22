@@ -19,11 +19,11 @@ fn json_roundtrip() -> Result<(), ()> {
     system.connect(&decode.output, &encode.input);
     system.connect(&encode.output, &output);
 
-    let thread = std::thread::spawn(|| system.execute().unwrap().join().unwrap());
+    let process = system.execute().unwrap();
 
     let message = output.recv().unwrap().unwrap();
 
-    thread.join().unwrap();
+    process.join().unwrap();
 
     assert_eq!(input_bytes, message);
 

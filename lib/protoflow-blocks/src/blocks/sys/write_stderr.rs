@@ -56,11 +56,10 @@ impl WriteStderr {
 
 impl Block for WriteStderr {
     fn execute(&mut self, runtime: &dyn BlockRuntime) -> BlockResult {
-        let mut stderr = std::io::stderr().lock();
-
         runtime.wait_for(&self.input)?;
 
         while let Some(message) = self.input.recv()? {
+            let mut stderr = std::io::stderr().lock();
             std::io::Write::write_all(&mut stderr, &message)?;
         }
 

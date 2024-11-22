@@ -56,11 +56,10 @@ impl WriteStdout {
 
 impl Block for WriteStdout {
     fn execute(&mut self, runtime: &dyn BlockRuntime) -> BlockResult {
-        let mut stdout = std::io::stdout().lock();
-
         runtime.wait_for(&self.input)?;
 
         while let Some(message) = self.input.recv()? {
+            let mut stdout = std::io::stdout().lock();
             std::io::Write::write_all(&mut stdout, &message)?;
         }
 

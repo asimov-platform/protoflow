@@ -1,0 +1,29 @@
+sequenceDiagram
+    autonumber
+    participant BlockA as Another block
+    participant Split.input as Split.input port
+    participant Split as Split block
+    participant Split.output_1 as Split.output_1 port
+    participant BlockB as Another block
+    participant Split.output_2 as Split.output_2 port
+    participant BlockC as Another block
+
+    BlockA-->>Split: Connect
+    Split-->>BlockB: Connect
+    Split-->>BlockC: Connect
+
+    loop Split process
+        BlockA->>Split: Message
+        Split->>Split: Decide the next output port
+        Split->>BlockB: Message
+        BlockA->>Split: Message
+        Split->>Split: Decide the next output port
+        Split->>BlockC: Message
+    end
+
+    BlockA-->>Split: Disconnect
+    Split-->>Split.input: Close
+    Split-->>Split.output_1: Close
+    Split-->>BlockB: Disconnect
+    Split-->>Split.output_2: Close
+    Split-->>BlockC: Disconnect

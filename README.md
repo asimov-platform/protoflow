@@ -114,6 +114,7 @@ The built-in blocks provided by Protoflow are listed below:
 |:------------------|:-------------------------------------------------------------------------------------------------------------------------------|
 | [`Buffer`]        | Stores all messages it receives.                                                                                               |
 | [`ConcatStrings`] | Concatenates the received string messages, with an optional delimiter string inserted between each message.                    |
+| [`Concat`]        | Merges multiple input message streams into a single output stream.                        |
 | [`Const`]         | Sends a constant value.                                                                                                        |
 | [`Count`]         | Counts the number of messages it receives, while optionally passing them through.                                              |
 | [`Decode`]        | Decodes messages from a byte stream.                                                                                           |
@@ -133,6 +134,9 @@ The built-in blocks provided by Protoflow are listed below:
 | [`ReadFile`]      | Reads bytes from the contents of a file.                                                                                       |
 | [`ReadSocket`]    | Reads bytes from a TCP socket.                                                                                                 |
 | [`ReadStdin`]     | Reads bytes from standard input (aka stdin).                                                                                   |
+| [`Replicate`]     | Duplicates a single input message stream into multiple identical output streams.                                               |
+| [`Sort`]          | Sorts a single input message stream in ascending order.                                                                        |
+| [`Split`]         | Divides a single input message stream into multiple output streams using a round-robin approach.                               |
 | [`SplitString`]   | Splits the received input message, with an optional delimiter string parameter.                                                |
 | [`WriteFile`]     | Writes or appends bytes to the contents of a file.                                                                             |
 | [`WriteSocket`]   | Writes bytes to a TCP socket                                                                                                   |
@@ -618,6 +622,32 @@ block-beta
 protoflow execute ReadStdin < input.txt
 ```
 
+#### [`Split`]
+
+Divides a single input message stream into multiple output streams using a round-robin approach.
+
+```mermaid
+block-beta
+    columns 7
+    space:5 Sink1 space:1
+    space:1 Source space:1 Split space:3
+    space:5 Sink2 space:1
+    Source-- "input" -->Split
+    Split-- "output_1" -->Sink1
+    Split-- "output_2" -->Sink2
+
+    classDef block height:48px,padding:8px;
+    classDef hidden visibility:none;
+    class Split block
+    class Source hidden
+    class Sink1 hidden
+    class Sink2 hidden
+```
+
+```bash
+protoflow execute Split
+```
+
 #### [`SplitString`]
 
 A block that splits the received input message, with an optional delimiter string parameter
@@ -795,6 +825,7 @@ To add a new block type implementation, make sure to examine and amend:
 [`examples`]: lib/protoflow/examples
 
 [`Buffer`]: https://docs.rs/protoflow-blocks/latest/protoflow_blocks/struct.Buffer.html
+[`Concat`]: https://docs.rs/protoflow-blocks/latest/protoflow_blocks/struct.Concat.html
 [`ConcatStrings`]: https://docs.rs/protoflow-blocks/latest/protoflow_blocks/struct.ConcatStrings.html
 [`Const`]: https://docs.rs/protoflow-blocks/latest/protoflow_blocks/struct.Const.html
 [`Count`]: https://docs.rs/protoflow-blocks/latest/protoflow_blocks/struct.Count.html
@@ -815,6 +846,9 @@ To add a new block type implementation, make sure to examine and amend:
 [`ReadFile`]: https://docs.rs/protoflow-blocks/latest/protoflow_blocks/struct.ReadFile.html
 [`ReadSocket`]: https://docs.rs/protoflow-blocks/latest/protoflow_blocks/struct.ReadSocket.html
 [`ReadStdin`]: https://docs.rs/protoflow-blocks/latest/protoflow_blocks/struct.ReadStdin.html
+[`Replicate`]: https://docs.rs/protoflow-blocks/latest/protoflow_blocks/struct.Replicate.html
+[`Sort`]: https://docs.rs/protoflow-blocks/latest/protoflow_blocks/struct.Sort.html
+[`Split`]: https://docs.rs/protoflow-blocks/latest/protoflow_blocks/struct.Split.html
 [`SplitString`]: https://docs.rs/protoflow-blocks/latest/protoflow_blocks/struct.SplitString.html
 [`WriteFile`]: https://docs.rs/protoflow-blocks/latest/protoflow_blocks/struct.WriteFile.html
 [`WriteSocket`]: https://docs.rs/protoflow-blocks/latest/protoflow_blocks/struct.WriteSocket.html

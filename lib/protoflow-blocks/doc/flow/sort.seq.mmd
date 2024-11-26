@@ -1,0 +1,22 @@
+sequenceDiagram
+    autonumber
+    participant BlockA as Another block
+    participant Sort.input as Sort.input port
+    participant Sort as Sort block
+    participant Sort.output as Sort.output port
+    participant BlockB as Another block
+
+    BlockA-->>Sort: Connect
+    Sort-->>BlockB: Connect
+
+    loop Sort process
+        BlockA->>Sort: Message
+        Sort->>Sort: Store message
+    end
+
+    Sort->>Sort: Sort messages
+    Sort->>BlockB: Message
+    BlockA-->>Sort: Disconnect
+    Sort-->>Sort.input: Close
+    Sort-->>Sort.output: Close
+    Sort-->>BlockB: Disconnect

@@ -1,0 +1,27 @@
+sequenceDiagram
+    autonumber
+    participant BlockA as Another block
+    participant Replicate.input as Replicate.input port
+    participant Replicate as Replicate block
+    participant Replicate.output_1 as Replicate.output port
+    participant BlockB as Another block
+    participant Replicate.output_2 as Replicate.output port
+    participant BlockC as Another block
+
+    BlockA-->>Replicate: Connect
+    Replicate-->>BlockB: Connect
+    Replicate-->>BlockC: Connect
+
+    loop Replicate process
+        BlockA->>Replicate: Message
+        Replicate->>BlockB: Message
+        Replicate->>BlockC: Message
+        
+    end
+
+    BlockA-->>Replicate: Disconnect
+    Replicate-->>Replicate.input: Close
+    Replicate-->>Replicate.output_1: Close
+    Replicate-->>BlockB: Disconnect
+    Replicate-->>Replicate.output_2: Close
+    Replicate-->>BlockC: Disconnect

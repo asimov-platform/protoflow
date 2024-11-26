@@ -5,10 +5,11 @@
 use crate::{
     prelude::{fmt, Arc, Box, FromStr, Rc, String, ToString},
     types::{DelayType, Encoding},
-    AllBlocks, Buffer, ConcatStrings, Const, CoreBlocks, Count, Decode, DecodeCsv, DecodeHex,
-    DecodeJson, Delay, Drop, Encode, EncodeCsv, EncodeHex, EncodeJson, FlowBlocks, HashBlocks,
-    IoBlocks, MathBlocks, Random, ReadDir, ReadEnv, ReadFile, ReadSocket, ReadStdin, SplitString,
-    SysBlocks, TextBlocks, WriteFile, WriteSocket, WriteStderr, WriteStdout,
+    AllBlocks, Buffer, Concat, ConcatStrings, Const, CoreBlocks, Count, Decode, DecodeCsv,
+    DecodeHex, DecodeJson, Delay, Drop, Encode, EncodeCsv, EncodeHex, EncodeJson, FlowBlocks,
+    HashBlocks, IoBlocks, MathBlocks, Random, ReadDir, ReadEnv, ReadFile, ReadSocket, ReadStdin,
+    Replicate, Sort, Split, SplitString, SysBlocks, TextBlocks, WriteFile, WriteSocket,
+    WriteStderr, WriteStdout,
 };
 use protoflow_core::{
     Block, BlockID, BlockResult, BoxedBlockType, InputPort, Message, OutputPort, PortID,
@@ -163,7 +164,23 @@ impl CoreBlocks for System {
     }
 }
 
-impl FlowBlocks for System {}
+impl FlowBlocks for System {
+    fn concat<T: Message + Into<T> + 'static>(&mut self) -> Concat<T> {
+        self.0.block(Concat::<T>::with_system(self))
+    }
+
+    fn replicate<T: Message + Into<T> + 'static>(&mut self) -> Replicate<T> {
+        self.0.block(Replicate::<T>::with_system(self))
+    }
+
+    fn sort<T: Message + Into<T> + PartialOrd + 'static>(&mut self) -> Sort<T> {
+        self.0.block(Sort::<T>::with_system(self))
+    }
+
+    fn split<T: Message + Into<T> + 'static>(&mut self) -> Split<T> {
+        self.0.block(Split::<T>::with_system(self))
+    }
+}
 
 #[cfg(not(any(
     feature = "hash-blake3",

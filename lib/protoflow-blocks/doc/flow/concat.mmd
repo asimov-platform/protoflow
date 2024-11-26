@@ -1,0 +1,15 @@
+block-beta
+    columns 7
+    space:1 Source1 space:5
+    space:3 Concat space:1 Sink space:1
+    space:1 Source2 space:5
+    Source1-- "input" -->Concat
+    Source2-- "input" -->Concat
+    Concat-- "output" -->Sink
+
+    classDef block height:48px,padding:8px;
+    classDef hidden visibility:none;
+    class Concat block
+    class Source1 hidden
+    class Source2 hidden
+    class Sink hidden

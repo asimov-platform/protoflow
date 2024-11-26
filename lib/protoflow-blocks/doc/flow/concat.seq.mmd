@@ -1,0 +1,28 @@
+sequenceDiagram
+    autonumber
+    participant BlockA as Another block
+    participant BlockA2 as Another block
+    participant Concat.input as Concat.input port
+    participant Concat.input2 as Concat.input port
+    participant Concat as Concat block
+    participant Concat.output as Concat.output port
+    participant BlockB as Another block
+
+    BlockA-->>Concat: Connect
+    BlockA2-->>Concat: Connect
+    Concat-->>BlockB: Connect
+
+    loop Concat process
+        BlockA->>Concat: Message
+        Concat->>Concat: Store message
+        BlockA2->>Concat: Message
+        Concat->>Concat: Store message
+    end
+    Concat->>Concat: Concat messages
+    Concat->>BlockB: Message
+    BlockA-->>Concat: Disconnect
+    BlockA2-->>Concat: Disconnect
+    Concat-->>Concat.input: Close
+    Concat-->>Concat.input2: Close
+    Concat-->>Concat.output: Close
+    Concat-->>BlockB: Disconnect

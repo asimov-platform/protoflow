@@ -1,0 +1,15 @@
+block-beta
+    columns 7
+    space:5 Sink1 space:1
+    space:1 Source space:1 Split space:3
+    space:5 Sink2 space:1
+    Source-- "input" -->Split
+    Split-- "output_1" -->Sink1
+    Split-- "output_2" -->Sink2
+
+    classDef block height:48px,padding:8px;
+    classDef hidden visibility:none;
+    class Split block
+    class Source hidden
+    class Sink1 hidden
+    class Sink2 hidden

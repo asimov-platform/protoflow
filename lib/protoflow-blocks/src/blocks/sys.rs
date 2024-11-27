@@ -1,19 +1,39 @@
 // This is free and unencumbered software released into the public domain.
 
+mod read_dir;
+mod read_env;
+mod read_file;
+mod read_socket;
+mod read_stdin;
+mod write_file;
+mod write_socket;
+mod write_stderr;
+mod write_stdout;
+
 #[cfg(not(feature = "std"))]
-pub mod sys {
+mod inner {
     pub trait SysBlocks {}
     pub enum SysBlockConfig {}
 }
 
 #[cfg(feature = "std")]
-pub mod sys {
-    use super::{
+mod inner {
+    use crate::{
         prelude::{vec, Box, Cow, Named, String, Vec},
         types::ByteSize,
         BlockConnections, BlockInstantiation, InputPortName, OutputPortName, System,
     };
     use protoflow_core::Block;
+
+    pub use super::read_dir::*;
+    pub use super::read_env::*;
+    pub use super::read_file::*;
+    pub use super::read_socket::*;
+    pub use super::read_stdin::*;
+    pub use super::write_file::*;
+    pub use super::write_socket::*;
+    pub use super::write_stderr::*;
+    pub use super::write_stdout::*;
 
     pub trait SysBlocks {
         fn read_dir(&mut self) -> ReadDir;
@@ -147,33 +167,6 @@ pub mod sys {
             }
         }
     }
-
-    mod read_dir;
-    pub use read_dir::*;
-
-    mod read_env;
-    pub use read_env::*;
-
-    mod read_file;
-    pub use read_file::*;
-
-    mod read_socket;
-    pub use read_socket::*;
-
-    mod read_stdin;
-    pub use read_stdin::*;
-
-    mod write_file;
-    pub use write_file::*;
-
-    mod write_socket;
-    pub use write_socket::*;
-
-    mod write_stderr;
-    pub use write_stderr::*;
-
-    mod write_stdout;
-    pub use write_stdout::*;
 }
 
-pub use sys::*;
+pub use inner::*;

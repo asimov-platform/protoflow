@@ -3,12 +3,10 @@
 extern crate std;
 
 use crate::{
-    prelude::{String, ToString, vec},
+    prelude::{vec, String, ToString},
     StdioConfig, StdioError, StdioSystem, System,
 };
-use protoflow_core::{
-    Block, BlockResult, BlockRuntime, InputPort, OutputPort,
-};
+use protoflow_core::{Block, BlockResult, BlockRuntime, InputPort, OutputPort};
 use protoflow_derive::Block;
 use simple_mermaid::mermaid;
 
@@ -62,7 +60,7 @@ pub struct SplitString {
     pub output: OutputPort<String>,
     /// A parameter to split the input string
     #[parameter]
-    pub delimiter: String
+    pub delimiter: String,
 }
 
 impl SplitString {
@@ -75,11 +73,15 @@ impl SplitString {
         Self::with_params(system.input(), system.output(), delimiter)
     }
 
-    pub fn with_params(input: InputPort<String>, output: OutputPort<String>, delimiter: Option<String>) -> Self {
+    pub fn with_params(
+        input: InputPort<String>,
+        output: OutputPort<String>,
+        delimiter: Option<String>,
+    ) -> Self {
         Self {
             input,
             output,
-            delimiter: delimiter.unwrap_or_default()
+            delimiter: delimiter.unwrap_or_default(),
         }
     }
 }
@@ -101,7 +103,7 @@ impl Block for SplitString {
 #[cfg(feature = "std")]
 impl StdioSystem for SplitString {
     fn build_system(config: StdioConfig) -> Result<System, StdioError> {
-        use crate::{TextBlocks, IoBlocks, SysBlocks, SystemBuilding};
+        use crate::{IoBlocks, SysBlocks, SystemBuilding, TextBlocks};
 
         config.allow_only(vec!["delimiter"])?;
         let delimiter = config.get_string("delimiter")?;

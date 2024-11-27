@@ -3,12 +3,10 @@
 extern crate std;
 
 use crate::{
-    prelude::{String, Vec, vec},
+    prelude::{vec, String, Vec},
     StdioConfig, StdioError, StdioSystem, System,
 };
-use protoflow_core::{
-    Block, BlockResult, BlockRuntime, InputPort, OutputPort,
-};
+use protoflow_core::{Block, BlockResult, BlockRuntime, InputPort, OutputPort};
 use protoflow_derive::Block;
 use simple_mermaid::mermaid;
 
@@ -62,7 +60,7 @@ pub struct ConcatStrings {
     pub output: OutputPort<String>,
     /// A parameter placed between each input parameter
     #[parameter]
-    pub delimiter: String
+    pub delimiter: String,
 }
 
 impl ConcatStrings {
@@ -75,11 +73,15 @@ impl ConcatStrings {
         Self::with_params(system.input(), system.output(), delimiter)
     }
 
-    pub fn with_params(input: InputPort<String>, output: OutputPort<String>, delimiter: Option<String>) -> Self {
+    pub fn with_params(
+        input: InputPort<String>,
+        output: OutputPort<String>,
+        delimiter: Option<String>,
+    ) -> Self {
         Self {
             input,
             output,
-            delimiter: delimiter.unwrap_or_default()
+            delimiter: delimiter.unwrap_or_default(),
         }
     }
 }
@@ -102,7 +104,7 @@ impl Block for ConcatStrings {
 #[cfg(feature = "std")]
 impl StdioSystem for ConcatStrings {
     fn build_system(config: StdioConfig) -> Result<System, StdioError> {
-        use crate::{TextBlocks, IoBlocks, SysBlocks, SystemBuilding};
+        use crate::{IoBlocks, SysBlocks, SystemBuilding, TextBlocks};
 
         config.allow_only(vec!["delimiter"])?;
         let delimiter = config.get_string("delimiter")?;

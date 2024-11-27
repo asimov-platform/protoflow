@@ -1,12 +1,14 @@
 // This is free and unencumbered software released into the public domain.
 
+mod hash;
+
 #[cfg(not(any(
     feature = "hash-blake3",
     feature = "hash-md5",
     feature = "hash-sha1",
     feature = "hash-sha2"
 )))]
-pub mod hash {
+mod inner {
     pub trait HashBlocks {}
     pub enum HashBlockConfig {}
 }
@@ -17,13 +19,15 @@ pub mod hash {
     feature = "hash-sha1",
     feature = "hash-sha2"
 ))]
-pub mod hash {
-    use super::{
+mod inner {
+    use crate::{
         prelude::{vec, Box, Cow, Named, Vec},
         types::HashAlgorithm,
         BlockConnections, BlockInstantiation, InputPortName, OutputPortName, System,
     };
     use protoflow_core::Block;
+
+    pub use super::hash::*;
 
     pub trait HashBlocks {
         fn hash(&mut self, algorithm: HashAlgorithm) -> Hash;
@@ -86,9 +90,6 @@ pub mod hash {
             }
         }
     }
-
-    mod hash;
-    pub use hash::*;
 }
 
-pub use hash::*;
+pub use inner::*;

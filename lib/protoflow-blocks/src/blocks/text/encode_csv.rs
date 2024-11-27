@@ -6,12 +6,13 @@ use crate::{
     prelude::{Bytes, String, ToString, Vec},
     StdioConfig, StdioError, StdioSystem, System,
 };
+use csv::WriterBuilder;
 use protoflow_core::{
-    types::{Value, value::Kind::*}, Block, BlockError, BlockResult, BlockRuntime, InputPort, OutputPort,
+    types::{value::Kind::*, Value},
+    Block, BlockError, BlockResult, BlockRuntime, InputPort, OutputPort,
 };
 use protoflow_derive::Block;
 use simple_mermaid::mermaid;
-use csv::WriterBuilder;
 use std::io::Cursor;
 /// A block that encodes CSV files by converting a header and rows, provided as `prost_types::Value` streams, into a byte stream.
 ///
@@ -55,8 +56,16 @@ pub struct EncodeCsv {
 }
 
 impl EncodeCsv {
-    pub fn new(header: InputPort<Value>, rows: InputPort<Value>, output: OutputPort<Bytes>) -> Self {
-        Self { header, rows, output }
+    pub fn new(
+        header: InputPort<Value>,
+        rows: InputPort<Value>,
+        output: OutputPort<Bytes>,
+    ) -> Self {
+        Self {
+            header,
+            rows,
+            output,
+        }
     }
 
     pub fn with_system(system: &System) -> Self {
@@ -91,7 +100,13 @@ fn encode_value_to_csv(value: &Value) -> Result<Bytes, BlockError> {
             let row: Vec<String> = lv
                 .values
                 .iter()
-                .filter_map(|v| if let Some(StringValue(s)) = &v.kind { Some(s.clone()) } else { None })
+                .filter_map(|v| {
+                    if let Some(StringValue(s)) = &v.kind {
+                        Some(s.clone())
+                    } else {
+                        None
+                    }
+                })
                 .collect();
 
             wtr.write_record(row)
@@ -106,10 +121,9 @@ fn encode_value_to_csv(value: &Value) -> Result<Bytes, BlockError> {
 #[cfg(feature = "std")]
 impl StdioSystem for EncodeCsv {
     fn build_system(config: StdioConfig) -> Result<System, StdioError> {
-
         config.reject_any()?;
 
-        Ok(System::build(|_s| { todo!() }))
+        Ok(System::build(|_s| todo!()))
     }
 }
 
@@ -134,15 +148,24 @@ mod tests {
         let value = Value {
             kind: Some(ListValue(protoflow_core::types::ListValue {
                 values: vec![
-                    Value { kind: Some(StringValue("col1".to_string())) },
-                    Value { kind: Some(StringValue("col2".to_string())) },
-                    Value { kind: Some(StringValue("col3".to_string())) },
+                    Value {
+                        kind: Some(StringValue("col1".to_string())),
+                    },
+                    Value {
+                        kind: Some(StringValue("col2".to_string())),
+                    },
+                    Value {
+                        kind: Some(StringValue("col3".to_string())),
+                    },
                 ],
             })),
         };
 
         let bytes = encode_value_to_csv(&value).expect("Encoding should succeed");
-        assert_eq!(String::from_utf8(bytes.to_vec()).unwrap(), "col1,col2,col3\n");
+        assert_eq!(
+            String::from_utf8(bytes.to_vec()).unwrap(),
+            "col1,col2,col3\n"
+        );
     }
 
     #[test]
@@ -162,9 +185,13 @@ mod tests {
         let value = Value {
             kind: Some(ListValue(protoflow_core::types::ListValue {
                 values: vec![
-                    Value { kind: Some(StringValue("valid".to_string())) },
+                    Value {
+                        kind: Some(StringValue("valid".to_string())),
+                    },
                     Value { kind: None }, // Invalid (None)
-                    Value { kind: Some(Kind::NumberValue(42.0)) }, // Unsupported type
+                    Value {
+                        kind: Some(Kind::NumberValue(42.0)),
+                    }, // Unsupported type
                 ],
             })),
         };

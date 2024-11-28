@@ -1,0 +1,170 @@
+# See: https://docs.github.com/en/actions/writing-workflows
+---
+name: CI
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    
+jobs:
+  check-formatting:
+    name: Check formatting
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          repository: ${{ github.event.pull_request.head.repo.full_name }}
+      - name: Install Rust
+        id: install-rust
+        uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: stable
+          components: rustfmt
+      - name: Check formatting
+        run: cargo +${{ steps.install-rust.outputs.name }} fmt --all -- --check 2>/dev/null
+  check-targets:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: Linux
+            target: x86_64-unknown-linux-gnu
+            os: ubuntu-latest
+          # - name: macOS
+          #   target: x86_64-apple-darwin
+          #   os: macos-latest
+          # - name: Windows
+          #   target: x86_64-pc-windows-gnu
+          #   os: windows-latest
+    name: Check ${{ matrix.name }}
+    runs-on: ${{ matrix.os }}
+    needs:
+      - check-formatting
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          repository: ${{ github.event.pull_request.head.repo.full_name }}
+      - name: Install Rust
+        id: install-rust
+        uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: 1.81.0
+          components: rustfmt
+          targets: ${{ matrix.target }}
+      - name: Build library
+        id: check-lib
+        if: ${{ always() }}
+        run: cargo +${{ steps.install-rust.outputs.name }} check --target ${{ matrix.target }} --workspace --keep-going --lib
+      - name: Build binaries
+        id: check-bins
+        if: ${{ always() }}
+        run: cargo +${{ steps.install-rust.outputs.name }} check --target ${{ matrix.target }} --workspace --keep-going --bins
+      - name: Build tests
+        id: check-tests
+        if: ${{ always() }}
+        run: cargo +${{ steps.install-rust.outputs.name }} check --target ${{ matrix.target }} --workspace --keep-going --tests
+      - name: Build examples
+        id: check-examples
+        if: ${{ always() }}
+        run: cargo +${{ steps.install-rust.outputs.name }} check --target ${{ matrix.target }} --workspace --keep-going --examples
+      - name: Run tests
+        id: run-tests
+        if: ${{ steps.check-tests.outcome == 'success' }}
+        run: |
+          cargo +${{ steps.install-rust.outputs.name }} test --target ${{ matrix.target }} --workspace --test "*" --no-fail-fast
+  review-pr:
+    name: Review PR
+    runs-on: ubuntu-latest
+    if: ${{ always() }}
+    needs:
+      - check-formatting
+      - check-targets
+    permissions:
+      pull-requests: write
+    steps:
+      - uses: actions/github-script@v7
+        with:
+          script: |
+            if (${{ needs.check-formatting.result != 'success' }} ||
+                ${{ needs.check-targets.result != 'success' }}) {
+              let FORMATTING_JOB_NAME = 'Check formatting';
+              let VERBOSE = true;
+              let response = undefined;
+
+              let body = `
+            ## ⚠️ CI failed
+
+            | Platform | Name | Status | Details |
+            | --- | --- | --- | --- |\n`;
+
+              function get_job_url(job_id) {
+                return `https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}/job/${job_id}?check_suite_focus=true`;
+              }
+              
+              function get_step_url(job_id, step_id) {
+                let job_url = get_job_url(job_id);
+                return `${job_url}#step:${step_id}:0`;
+              }
+              
+              response = await github.rest.actions.listJobsForWorkflowRunAttempt({
+                ...context.repo,
+                run_id: context.runId,
+                attempt_number: context.runAttempt || 1
+              });
+
+              let formatting_job = response.data.jobs.find(job => job.name.includes(FORMATTING_JOB_NAME));
+              if (formatting_job != undefined && (VERBOSE || formatting_job.conclusion == 'failure')) {
+                let succeed = formatting_job.conclusion == 'success' ? '✅' : '❌';
+                let url = get_job_url(formatting_job.id);
+                body += `| All | Formatting | ${succeed} | [Details](${url}) |\n`;
+              }
+
+              for (let job of response.data.jobs) {
+                if (job.name.startsWith('Check') && job.name != formatting_job.name &&
+                    (VERBOSE || job.conclusion == 'failure')) {
+                  let platform = job.name.split(' ')[1];
+                  for (let step of job.steps) {
+                    if ((step.name.startsWith('Build ') || step.name.startsWith('Run ')) &&
+                        (VERBOSE || step.conclusion == 'failure')) {
+                      let name = step.name;
+                      let icon = '';
+                      switch (step.conclusion) {
+                        case 'success':
+                          icon = '✅';
+                          break;
+                        case 'skipped':
+                          icon = '⏩';
+                          break;
+                        case 'failure':
+                        case 'cancelled':
+                          icon = '❌';
+                          break;
+                        default:
+                          // Should never reach here.
+                          icon = '❓';
+                          break;
+                      }
+                      let url = get_step_url(job.id, step.number);
+                      body += `| ${platform} | ${name} | ${icon} | [Details](${url}) |\n`;
+                    }
+                  }
+                }
+              }
+            
+              await github.rest.pulls.createReview({
+                ...context.repo,
+                pull_number: context.issue.number,
+                event: 'REQUEST_CHANGES',
+                body: body,
+              });
+            } else {
+              await github.rest.pulls.createReview({
+                ...context.repo,
+                pull_number: context.issue.number,
+                event: 'APPROVE',
+              });
+            }

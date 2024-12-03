@@ -1,0 +1,46 @@
+syntax = "proto3";
+
+package protoflow.zmq;
+
+message Connect {
+	int64 output = 1;
+	int64 input = 2;
+}
+
+message AckConnection {
+	int64 output = 1;
+	int64 input = 2;
+}
+
+message Message {
+	int64 output = 1;
+	int64 input = 2;
+	uint64 sequence = 3;
+	bytes message = 4;
+}
+
+message AckMessage {
+	int64 output = 1;
+	int64 input = 2;
+	uint64 sequence = 3;
+}
+
+message CloseOutput {
+	int64 output = 1;
+	int64 input = 2;
+}
+
+message CloseInput {
+	int64 input = 1;
+}
+
+message Event {
+	oneof payload {
+		Connect connect = 1;
+		AckConnection ack_connection = 2;
+		Message message = 3;
+		AckMessage ack_message = 4;
+		CloseOutput close_output = 5;
+		CloseInput close_input = 6;
+	}
+}

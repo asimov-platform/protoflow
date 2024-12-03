@@ -17,6 +17,7 @@ pub enum BlockTag {
     Delay,
     Drop,
     Random,
+    RandomInt,
     // FlowBlocks
     // HashBlocks
     #[cfg(any(
@@ -78,6 +79,7 @@ impl BlockTag {
             Delay => "Delay",
             Drop => "Drop",
             Random => "Random",
+            RandomInt => "RandomInt",
             #[cfg(any(
                 feature = "hash-blake3",
                 feature = "hash-md5",
@@ -129,6 +131,7 @@ impl FromStr for BlockTag {
             "Delay" => Delay,
             "Drop" => Drop,
             "Random" => Random,
+            "RandomInt" => RandomInt,
             #[cfg(any(
                 feature = "hash-blake3",
                 feature = "hash-md5",
@@ -191,6 +194,7 @@ impl BlockInstantiation for BlockTag {
             Delay => Box::new(super::Delay::<Any>::with_system(system, None)),
             Drop => Box::new(super::Drop::<Any>::with_system(system)),
             Random => Box::new(super::Random::<u64>::with_system(system, None)),
+            RandomInt => Box::new(super::RandomInt::with_system(system, None, None, None)),
             #[cfg(any(
                 feature = "hash-blake3",
                 feature = "hash-md5",

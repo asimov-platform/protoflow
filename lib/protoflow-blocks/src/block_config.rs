@@ -57,7 +57,7 @@ impl<'de> serde::Deserialize<'de> for BlockConfig {
                 tag,
                 value: Value::Mapping(_mapping),
             } => Ok(match tag.string.as_str() {
-                "Buffer" | "Const" | "Count" | "Delay" | "Drop" | "Random" => {
+                "Buffer" | "Const" | "Count" | "Delay" | "Drop" | "Random" | "RandomInt" => {
                     CoreBlockConfig::deserialize(value.clone())
                         .map(BlockConfig::Core)
                         .unwrap()

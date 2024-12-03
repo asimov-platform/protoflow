@@ -59,6 +59,7 @@ pub fn build_stdio_system(
         "Delay" => Delay::<String>::build_system(config)?,
         "Drop" => Drop::<String>::build_system(config)?,
         "Random" => Random::<u64>::build_system(config)?,
+        "RandomInt" => RandomInt::build_system(config)?,
         // FlowBlocks
         // HashBlocks
         #[cfg(any(

@@ -1,0 +1,12 @@
+sequenceDiagram
+    autonumber
+    participant RandomInt as RandomInt block
+    participant RandomInt.output as RandomInt.output port
+    participant BlockA as Another block
+
+    RandomInt-->>BlockA: Connect
+
+    RandomInt->>BlockA: Random number
+
+    RandomInt-->>RandomInt.output: Close
+    RandomInt-->>BlockA: Disconnect

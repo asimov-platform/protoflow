@@ -128,6 +128,7 @@ The built-in blocks provided by Protoflow are listed below:
 | [`EncodeJSON`]    | Encodes messages into JSON format.                                                                                             |
 | [`Hash`]          | Computes the cryptographic hash of a byte stream.                                                                              |
 | [`Random`]        | Generates and sends a random value.                                                                                            |
+| [`RandomInt`]     | Generates and sends a random number.                                                                                           |
 | [`ReadDir`]       | Reads file names from a file system directory.                                                                                 |
 | [`ReadEnv`]       | Reads the value of an environment variable.                                                                                    |
 | [`ReadFile`]      | Reads bytes from the contents of a file.                                                                                       |
@@ -503,6 +504,27 @@ block-beta
 protoflow execute Random seed=42
 ```
 
+#### [`RandomInt`]
+
+A block for generating and sending a random number.
+
+```mermaid
+block-beta
+    columns 4
+    RandomInt space:2 Sink
+    RandomInt-- "output" -->Sink
+
+    classDef block height:48px,padding:8px;
+    classDef hidden visibility:none;
+    class RandomInt block
+    class Sink hidden
+```
+
+```bash
+protoflow execute RandomInt min=0 max=100
+protoflow execute RandomInt seed=42 min=0 max=100
+```
+
 #### [`ReadDir`]
 
 A block that reads file names from a file system directory.
@@ -810,6 +832,7 @@ To add a new block type implementation, make sure to examine and amend:
 [`EncodeJSON`]: https://docs.rs/protoflow-blocks/latest/protoflow_blocks/struct.EncodeJson.html
 [`Hash`]: https://docs.rs/protoflow-blocks/latest/protoflow_blocks/struct.Hash.html
 [`Random`]: https://docs.rs/protoflow-blocks/latest/protoflow_blocks/struct.Random.html
+[`RandomInt`]: https://docs.rs/protoflow-blocks/latest/protoflow_blocks/struct.RandomInt.html
 [`ReadDir`]: https://docs.rs/protoflow-blocks/latest/protoflow_blocks/struct.ReadDir.html
 [`ReadEnv`]: https://docs.rs/protoflow-blocks/latest/protoflow_blocks/struct.ReadEnv.html
 [`ReadFile`]: https://docs.rs/protoflow-blocks/latest/protoflow_blocks/struct.ReadFile.html

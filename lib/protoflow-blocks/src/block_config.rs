@@ -79,6 +79,10 @@ impl<'de> serde::Deserialize<'de> for BlockConfig {
                         .unwrap()
                 }
 
+                "Add" | "Div" | "Mul" | "Sub" => MathBlockConfig::deserialize(value.clone())
+                    .map(BlockConfig::Math)
+                    .unwrap(),
+
                 #[cfg(feature = "std")]
                 "ReadDir" | "ReadEnv" | "ReadFile" | "ReadSocket" | "ReadStdin" | "WriteFile"
                 | "WriteSocket" | "WriteStderr" | "WriteStdout" => {

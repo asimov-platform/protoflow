@@ -1,0 +1,21 @@
+sequenceDiagram
+    autonumber
+    participant BlockA as Another block
+    participant Mul.input as Mul.input port
+    participant Mul as Mul block
+    participant Mul.output as Mul.output port
+    participant BlockB as Another block
+
+    BlockA-->>Mul: Connect
+    Mul-->>BlockB: Connect
+
+    loop Mul process
+        BlockA->>Mul: Message
+        Mul->>Mul: Mul numbers
+        Mul->>BlockB: Message
+    end
+
+    BlockA-->>Mul: Disconnect
+    Mul-->>Mul.input: Close
+    Mul-->>Mul.output: Close
+    Mul-->>BlockB: Disconnect

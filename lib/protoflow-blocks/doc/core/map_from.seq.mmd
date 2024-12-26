@@ -1,0 +1,21 @@
+sequenceDiagram
+    autonumber
+    participant BlockA as Another block
+    participant MapFrom.input as MapFrom.input port
+    participant MapFrom as MapFrom block
+    participant MapFrom.output as MapFrom.output port
+    participant BlockB as Another block
+
+    BlockA-->>MapFrom: Connect
+    MapFrom-->>BlockB: Connect
+
+    loop MapFrom process
+        BlockA->>MapFrom: Message
+        MapFrom->>MapFrom: Transform
+        MapFrom->>BlockB: Message
+    end
+
+    BlockA-->>MapFrom: Disconnect
+    MapFrom-->>MapFrom.input: Close
+    MapFrom-->>MapFrom.output: Close
+    MapFrom-->>BlockB: Disconnect

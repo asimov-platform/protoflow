@@ -34,9 +34,9 @@ pub mod core {
 
         fn drop<T: Message + 'static>(&mut self) -> Drop<T>;
 
-        fn mapper<Input: Message + 'static, Output: Message + From<Input> + 'static>(
+        fn map_from<Input: Message + 'static, Output: Message + From<Input> + 'static>(
             &mut self,
-        ) -> Mapper<Input, Output>;
+        ) -> MapFrom<Input, Output>;
 
         fn random<T: Message + 'static>(&mut self) -> Random<T>;
 
@@ -51,7 +51,7 @@ pub mod core {
         Count,
         Delay,
         Drop,
-        Mapper,
+        MapFrom,
         Random,
     }
 
@@ -83,7 +83,7 @@ pub mod core {
             input: InputPortName,
         },
 
-        Mapper {
+        MapFrom {
             input: InputPortName,
             output: OutputPortName,
         },
@@ -103,7 +103,7 @@ pub mod core {
                 Count { .. } => "Count",
                 Delay { .. } => "Delay",
                 Drop { .. } => "Drop",
-                Mapper { .. } => "Mapper",
+                MapFrom { .. } => "MapFrom",
                 Random { .. } => "Random",
             })
         }
@@ -120,7 +120,7 @@ pub mod core {
                 }
                 Delay { output, .. } => vec![("output", Some(output.clone()))],
                 Drop { .. } => vec![],
-                Mapper { output, .. } => vec![("output", Some(output.clone()))],
+                MapFrom { output, .. } => vec![("output", Some(output.clone()))],
                 Random { output, .. } => vec![("output", Some(output.clone()))],
             }
         }
@@ -147,7 +147,7 @@ pub mod core {
                     // TODO: Delay::with_system(system, Some(delay.clone())))
                 }
                 Drop { .. } => Box::new(super::Drop::new(system.input_any())), // TODO: Drop::with_system(system)
-                Mapper { .. } => Box::new(super::Mapper::with_params(
+                MapFrom { .. } => Box::new(super::MapFrom::with_params(
                     system.input_any(),
                     system.output_any(),
                 )),
@@ -174,8 +174,8 @@ pub mod core {
     mod drop;
     pub use drop::*;
 
-    mod mapper;
-    pub use mapper::*;
+    mod map_from;
+    pub use map_from::*;
 
     mod random;
     pub use random::*;

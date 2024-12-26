@@ -7,7 +7,7 @@ use crate::{
     types::{DelayType, Encoding},
     AllBlocks, Buffer, ConcatStrings, Const, CoreBlocks, Count, Decode, DecodeCsv, DecodeHex,
     DecodeJson, Delay, Drop, Encode, EncodeCsv, EncodeHex, EncodeJson, FlowBlocks, HashBlocks,
-    IoBlocks, Mapper, MathBlocks, Random, ReadDir, ReadEnv, ReadFile, ReadStdin, SplitString,
+    IoBlocks, MapFrom, MathBlocks, Random, ReadDir, ReadEnv, ReadFile, ReadStdin, SplitString,
     SysBlocks, TextBlocks, WriteFile, WriteStderr, WriteStdout,
 };
 #[cfg(all(feature = "std", feature = "serde"))]
@@ -161,10 +161,10 @@ impl CoreBlocks for System {
         self.0.block(Drop::<T>::with_system(self))
     }
 
-    fn mapper<Input: Message + 'static, Output: Message + From<Input> + 'static>(
+    fn map_from<Input: Message + 'static, Output: Message + From<Input> + 'static>(
         &mut self,
-    ) -> Mapper<Input, Output> {
-        self.0.block(Mapper::<Input, Output>::with_system(self))
+    ) -> MapFrom<Input, Output> {
+        self.0.block(MapFrom::<Input, Output>::with_system(self))
     }
 
     fn random<T: Message + 'static>(&mut self) -> Random<T> {

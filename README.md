@@ -127,7 +127,7 @@ The built-in blocks provided by Protoflow are listed below:
 | [`EncodeHex`]     | Encodes a byte stream into hexadecimal form.                                                                                   |
 | [`EncodeJSON`]    | Encodes messages into JSON format.                                                                                             |
 | [`Hash`]          | Computes the cryptographic hash of a byte stream.                                                                              |
-| [`Mapper`]        | Maps a message from one type to another. |
+| [`MapFrom`]        | Maps a message from one type to another. |
 | [`Random`]        | Generates and sends a random value.                                                                                            |
 | [`ReadDir`]       | Reads file names from a file system directory.                                                                                 |
 | [`ReadEnv`]       | Reads the value of an environment variable.                                                                                    |
@@ -484,20 +484,20 @@ block-beta
 protoflow execute Hash algorithm=blake3
 ```
 
-#### [`Mapper`]
+#### [`MapFrom`]
 
 A block to map a message from one type to another.
 
 ```mermaid
 block-beta
     columns 7
-    Source space:2 Mapper space:2 Sink
-    Source-- "input" -->Mapper
-    Mapper-- "output" -->Sink
+    Source space:2 MapFrom space:2 Sink
+    Source-- "input" -->MapFrom
+    MapFrom-- "output" -->Sink
 
     classDef block height:48px,padding:8px;
     classDef hidden visibility:none;
-    class Mapper block
+    class MapFrom block
     class Source hidden
     class Sink hidden
 ```
@@ -828,7 +828,7 @@ To add a new block type implementation, make sure to examine and amend:
 [`EncodeHex`]: https://docs.rs/protoflow-blocks/latest/protoflow_blocks/struct.EncodeHex.html
 [`EncodeJSON`]: https://docs.rs/protoflow-blocks/latest/protoflow_blocks/struct.EncodeJson.html
 [`Hash`]: https://docs.rs/protoflow-blocks/latest/protoflow_blocks/struct.Hash.html
-[`Mapper`]: https://docs.rs/protoflow-blocks/latest/protoflow_blocks/struct.Mapper.html
+[`MapFrom`]: https://docs.rs/protoflow-blocks/latest/protoflow_blocks/struct.MapFrom.html
 [`Random`]: https://docs.rs/protoflow-blocks/latest/protoflow_blocks/struct.Random.html
 [`ReadDir`]: https://docs.rs/protoflow-blocks/latest/protoflow_blocks/struct.ReadDir.html
 [`ReadEnv`]: https://docs.rs/protoflow-blocks/latest/protoflow_blocks/struct.ReadEnv.html

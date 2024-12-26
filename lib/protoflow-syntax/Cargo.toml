@@ -22,7 +22,6 @@ std = [
     "protoflow-core/std",
     "sysml-model?/std",
     "sysml-parser?/std",
-    "tracing?/std",
 ]
 sysml = [
     "protoflow-blocks/sysml",
@@ -34,7 +33,6 @@ tracing = [
     "protoflow-blocks/tracing",
     "protoflow-core/tracing",
     "sysml-parser?/tracing",
-    "dep:tracing",
 ]
 unstable = ["protoflow-blocks/unstable", "protoflow-core/unstable"]
 
@@ -54,6 +52,5 @@ sysml-model = { version = "=0.2.3", default-features = false, optional = true }
 sysml-parser = { version = "=0.2.3", default-features = false, features = [
     "error-stack",
 ], optional = true }
-tracing = { version = "0.1", default-features = false, optional = true }
 
 [dev-dependencies]

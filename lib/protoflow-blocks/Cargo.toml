@@ -24,13 +24,7 @@ hash-sha1 = ["dep:sha1"]
 hash-sha2 = ["dep:sha2"]
 
 rand = ["protoflow-core/rand"]
-std = [
-    "blake3?/std",
-    "protoflow-core/std",
-    "serde?/std",
-    "sysml-model?/std",
-    "tracing?/std",
-]
+std = ["blake3?/std", "protoflow-core/std", "serde?/std", "sysml-model?/std"]
 serde = [
     "duration-str/serde",
     "protoflow-core/serde",
@@ -40,7 +34,7 @@ serde = [
 ]
 sysml = ["protoflow-core/sysml", "dep:sysml-model"]
 tokio = ["protoflow-core/tokio", "dep:tokio"]
-tracing = ["protoflow-core/tracing", "dep:tracing"]
+tracing = ["protoflow-core/tracing"]
 unstable = ["protoflow-core/unstable", "protoflow-derive/unstable"]
 
 [build-dependencies]
@@ -54,7 +48,6 @@ md-5 = { version = "0.10.6", default-features = false, optional = true }
 protoflow-core.workspace = true
 protoflow-derive.workspace = true
 tokio = { version = "1.40.0", default-features = false, optional = true }
-tracing = { version = "0.1", default-features = false, optional = true }
 serde = { version = "1.0", default-features = false, features = [
     "derive",
 ], optional = true }

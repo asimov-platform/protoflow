@@ -36,7 +36,6 @@ std = [
     "protoflow-flume?/std",
     "protoflow-syntax?/std",
     "protoflow-zeromq?/std",
-    "tracing?/std",
 ]
 syntax = ["dep:protoflow-syntax"]
 sysml = [
@@ -46,7 +45,11 @@ sysml = [
     "protoflow-syntax?/sysml",
 ]
 tokio = ["protoflow-core/tokio"]
-tracing = ["dep:tracing", "clientele?/tracing"] # FIXME
+tracing = [
+    "protoflow-core/tracing",
+    "protoflow-blocks/tracing",
+    "clientele?/tracing",
+] # FIXME
 unstable = [
     "protoflow-blocks?/unstable",
     "protoflow-core/unstable",
@@ -79,7 +82,6 @@ protoflow-derive = { version = "=0.4.3", optional = true }
 protoflow-flume = { version = "=0.4.3", default-features = false, optional = true }
 protoflow-syntax = { version = "=0.4.3", default-features = false, optional = true }
 protoflow-zeromq = { version = "=0.4.3", default-features = false, optional = true }
-tracing = { version = "0.1", default-features = false, optional = true }
 
 [dev-dependencies]
 tokio = { version = "1.40.0", default-features = false }

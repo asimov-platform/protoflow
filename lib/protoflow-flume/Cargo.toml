@@ -17,8 +17,8 @@ publish.workspace = true
 [features]
 default = ["all", "std"]
 all = ["tracing"]
-std = ["protoflow-core/std", "tracing?/std"]
-tracing = ["protoflow-core/tracing", "dep:tracing"]
+std = ["protoflow-core/std"]
+tracing = ["protoflow-core/tracing"]
 unstable = ["protoflow-core/unstable"]
 
 [build-dependencies]
@@ -27,6 +27,5 @@ cfg_aliases.workspace = true
 [dependencies]
 flume = { version = "0.11", default-features = false }
 protoflow-core.workspace = true
-tracing = { version = "0.1", default-features = false, optional = true }
 
 [dev-dependencies]

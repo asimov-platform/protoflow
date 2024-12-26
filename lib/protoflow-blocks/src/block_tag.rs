@@ -16,6 +16,7 @@ pub enum BlockTag {
     Count,
     Delay,
     Drop,
+    MapFrom,
     Random,
     // FlowBlocks
     // HashBlocks
@@ -77,6 +78,7 @@ impl BlockTag {
             Count => "Count",
             Delay => "Delay",
             Drop => "Drop",
+            MapFrom => "MapFrom",
             Random => "Random",
             #[cfg(any(
                 feature = "hash-blake3",
@@ -128,6 +130,7 @@ impl FromStr for BlockTag {
             "Count" => Count,
             "Delay" => Delay,
             "Drop" => Drop,
+            "MapFrom" => MapFrom,
             "Random" => Random,
             #[cfg(any(
                 feature = "hash-blake3",
@@ -204,6 +207,7 @@ impl BlockInstantiation for BlockTag {
             Encode => Box::new(super::Encode::<String>::with_system(system, None)),
             EncodeHex => Box::new(super::EncodeHex::with_system(system)),
             EncodeJson => Box::new(super::EncodeJson::with_system(system)),
+            MapFrom => Box::new(super::MapFrom::<Any, Any>::with_system(system)),
             #[cfg(feature = "std")]
             ReadDir => Box::new(super::ReadDir::with_system(system)),
             #[cfg(feature = "std")]

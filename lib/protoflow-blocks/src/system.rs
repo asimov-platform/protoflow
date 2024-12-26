@@ -3,12 +3,10 @@
 #![allow(dead_code)]
 
 use crate::{
+    blocks::*,
     prelude::{fmt, Arc, Box, Bytes, FromStr, Rc, String, ToString},
     types::{DelayType, Encoding},
-    AllBlocks, Buffer, ConcatStrings, Const, CoreBlocks, Count, Decode, DecodeCsv, DecodeHex,
-    DecodeJson, Delay, Drop, Encode, EncodeCsv, EncodeHex, EncodeJson, FlowBlocks, HashBlocks,
-    IoBlocks, MathBlocks, Random, ReadDir, ReadEnv, ReadFile, ReadStdin, SplitString, SysBlocks,
-    TextBlocks, WriteFile, WriteStderr, WriteStdout,
+    AllBlocks, CoreBlocks, FlowBlocks, HashBlocks, IoBlocks, MathBlocks, SysBlocks, TextBlocks,
 };
 #[cfg(all(feature = "std", feature = "serde"))]
 use crate::{ReadSocket, WriteSocket};

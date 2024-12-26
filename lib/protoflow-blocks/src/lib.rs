@@ -31,13 +31,18 @@ pub use types::*;
 
 pub use protoflow_core::{SystemBuilding, SystemExecution};
 
-include!("blocks/core.rs"); // CoreBlocks
-include!("blocks/flow.rs"); // FlowBlocks
-include!("blocks/hash.rs"); // HashBlocks
-include!("blocks/io.rs"); // IoBlocks
-include!("blocks/math.rs"); // MathBlocks
-include!("blocks/sys.rs"); // SysBlocks
-include!("blocks/text.rs"); // TextBlocks
+pub mod blocks {
+    use super::*;
+
+    include!("blocks/core.rs"); // CoreBlocks
+    include!("blocks/flow.rs"); // FlowBlocks
+    include!("blocks/hash.rs"); // HashBlocks
+    include!("blocks/io.rs"); // IoBlocks
+    include!("blocks/math.rs"); // MathBlocks
+    include!("blocks/sys.rs"); // SysBlocks
+    include!("blocks/text.rs"); // TextBlocks
+}
+pub use blocks::*;
 
 pub trait AllBlocks:
     CoreBlocks + FlowBlocks + HashBlocks + IoBlocks + MathBlocks + SysBlocks + TextBlocks

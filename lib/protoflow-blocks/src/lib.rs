@@ -58,6 +58,7 @@ pub fn build_stdio_system(
         "Count" => Count::<String>::build_system(config)?,
         "Delay" => Delay::<String>::build_system(config)?,
         "Drop" => Drop::<String>::build_system(config)?,
+        "MapFrom" => MapFrom::<String, String>::build_system(config)?,
         "Random" => Random::<u64>::build_system(config)?,
         // FlowBlocks
         // HashBlocks

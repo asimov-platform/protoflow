@@ -1,6 +1,6 @@
 // This is free and unencumbered software released into the public domain.
 
-use crate::System;
+use crate::{prelude::Bytes, StdioConfig, StdioError, StdioSystem, System};
 use protoflow_core::{Block, BlockResult, BlockRuntime, InputPort, Message, OutputPort};
 use protoflow_derive::Block;
 use simple_mermaid::mermaid;
@@ -64,6 +64,21 @@ impl<Input: Message, Output: Message + From<Input>> Block for MapFrom<Input, Out
         }
 
         Ok(())
+    }
+}
+
+#[cfg(feature = "std")]
+impl<Input: Message, Output: Message + From<Input>> StdioSystem for MapFrom<Input, Output> {
+    fn build_system(config: StdioConfig) -> Result<System, StdioError> {
+        use crate::SystemBuilding;
+
+        config.reject_any()?;
+
+        Ok(System::build(|s| {
+            let stdin = config.read_stdin(s);
+            let map = s.block(MapFrom::<Bytes, Bytes>::with_system(s));
+            s.connect(&stdin.output, &map.input);
+        }))
     }
 }
 

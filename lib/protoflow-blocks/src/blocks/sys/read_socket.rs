@@ -5,7 +5,8 @@ use crate::{
     StdioConfig, StdioError, StdioSystem, System,
 };
 use protoflow_core::{
-    Block, BlockError, BlockResult, BlockRuntime, OutputPort, Port, PortResult, SystemBuilding,
+    error, info, Block, BlockError, BlockResult, BlockRuntime, OutputPort, Port, PortResult,
+    SystemBuilding,
 };
 use protoflow_derive::Block;
 use serde::{Deserialize, Serialize};
@@ -16,8 +17,6 @@ use std::{
     net::{TcpListener, TcpStream},
     sync::{Arc, Mutex, PoisonError},
 };
-#[cfg(feature = "tracing")]
-use tracing::{error, info};
 
 /// A block that reads a proto object from a TCP port.
 ///
@@ -101,7 +100,6 @@ impl Block for ReadSocket {
     fn prepare(&mut self, _runtime: &dyn BlockRuntime) -> BlockResult {
         let listener = TcpListener::bind(&self.config.connection)?;
         *self.listener.lock().map_err(lock_error)? = Some(listener);
-        #[cfg(feature = "tracing")]
         info!("Server listening on {}", &self.config.connection);
         Ok(())
     }
@@ -116,18 +114,15 @@ impl Block for ReadSocket {
                 .ok_or(BlockError::Other("Invalid TCP listener".into()))?;
 
             let (stream, addr) = listener.accept().map_err(|e| {
-                #[cfg(feature = "tracing")]
                 error!("Failed to accept client connection: {}", e);
                 BlockError::Other("Failed to accept client connection".into())
             })?;
-            #[cfg(feature = "tracing")]
             info!("Accepted connection from {}", addr);
             *stream_guard = Some(stream);
         }
 
         if let Some(stream) = stream_guard.as_mut() {
             handle_client::<_>(stream, self.config.buffer_size, |message| {
-                #[cfg(feature = "tracing")]
                 info!("Processing received message");
                 if self.output.is_connected() {
                     self.output.send(message)?;
@@ -135,7 +130,6 @@ impl Block for ReadSocket {
                 Ok(())
             })
             .map_err(|e| {
-                #[cfg(feature = "tracing")]
                 error!("Error handling client: {}", e);
                 BlockError::Other("Error handling client".into())
             })?;
@@ -163,17 +157,14 @@ where
         let bytes_read = stream.read(&mut buffer)?;
 
         if bytes_read == 0 {
-            #[cfg(feature = "tracing")]
             info!("Client disconnected");
             break;
         }
 
         let message = Bytes::copy_from_slice(&buffer[..bytes_read]);
-        #[cfg(feature = "tracing")]
         info!("Received message: {:?}", message);
 
         if let Err(e) = process_fn(&message) {
-            #[cfg(feature = "tracing")]
             error!("Failed to process message: {:?}", e);
             return Err(BlockError::Other("Failed to process message".into()));
         }
@@ -223,7 +214,6 @@ pub mod read_socket_tests {
             ));
             s.connect(&read_socket.output, &std_out.input);
         }) {
-            #[cfg(feature = "tracing")]
             error!("{}", e)
         }
     }

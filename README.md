@@ -11,8 +11,14 @@ _"Τὰ πάντα ῥεῖ καὶ οὐδὲν μένει" — Heraclitus_
 with messages encoded as [Protocol Buffers]. It can be used to implement
 dataflow systems consisting of interconnected blocks that process messages.
 
-> [!TIP]
-> 🚧 _We are building in public. This is presently under heavy construction._
+> [!WARNING]
+> **Protoflow has been discontinued** and archived in favor of its successors
+> [Async-Flow](https://github.com/artob/async-flow) and
+> [Flows.rs](https://github.com/artob/flows.rs), which represent the future of
+> flow-based programming in Rust and offer a substantially better developer
+> experience as well as simply higher development velocity. See also
+> [Awesome FBP](https://github.com/artob/awesome-fbp) for the long tail of
+> miscellaneous Rust implementations of flow-based programming.
 
 - [Features](#-features)
 - [Prerequisites](#%EF%B8%8F-prerequisites)

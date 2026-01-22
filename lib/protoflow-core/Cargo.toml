@@ -40,7 +40,7 @@ cfg_aliases.workspace = true
 
 [dependencies]
 bytes = { version = "1", default-features = false }
-dogma = { version = "0.1", default-features = false }
+dogma = { version = "0.1", default-features = false, features = ["traits"] }
 getrandom = { version = "0.2", optional = true, default-features = false }
 parking_lot = "0.12"
 prost = { version = "0.13", default-features = false, features = ["derive"] }

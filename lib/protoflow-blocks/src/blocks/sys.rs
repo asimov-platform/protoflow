@@ -19,9 +19,11 @@ pub mod sys {
         fn read_dir(&mut self) -> ReadDir;
         fn read_env(&mut self) -> ReadEnv;
         fn read_file(&mut self) -> ReadFile;
+        #[cfg(feature = "serde")]
         fn read_socket(&mut self) -> ReadSocket;
         fn read_stdin(&mut self) -> ReadStdin;
         fn write_file(&mut self) -> WriteFile;
+        #[cfg(feature = "serde")]
         fn write_socket(&mut self) -> WriteSocket;
         fn write_stderr(&mut self) -> WriteStderr;
         fn write_stdout(&mut self) -> WriteStdout;
@@ -33,9 +35,11 @@ pub mod sys {
         ReadDir,
         ReadEnv,
         ReadFile,
+        #[cfg(feature = "serde")]
         ReadSocket,
         ReadStdin,
         WriteFile,
+        #[cfg(feature = "serde")]
         WriteSocket,
         WriteStderr,
         WriteStdout,
@@ -59,6 +63,7 @@ pub mod sys {
             output: OutputPortName,
         },
 
+        #[cfg(feature = "serde")]
         ReadSocket {
             output: OutputPortName,
             config: ReadSocketConfig,
@@ -75,6 +80,7 @@ pub mod sys {
             flags: Option<WriteFlags>,
         },
 
+        #[cfg(feature = "serde")]
         WriteSocket {
             input: InputPortName,
             config: WriteSocketConfig,
@@ -96,9 +102,11 @@ pub mod sys {
                 ReadDir { .. } => "ReadDir",
                 ReadEnv { .. } => "ReadEnv",
                 ReadFile { .. } => "ReadFile",
+                #[cfg(feature = "serde")]
                 ReadSocket { .. } => "ReadSocket",
                 ReadStdin { .. } => "ReadStdin",
                 WriteFile { .. } => "WriteFile",
+                #[cfg(feature = "serde")]
                 WriteSocket { .. } => "WriteSocket",
                 WriteStderr { .. } => "WriteStderr",
                 WriteStdout { .. } => "WriteStdout",
@@ -113,13 +121,18 @@ pub mod sys {
                 ReadDir { output, .. }
                 | ReadEnv { output, .. }
                 | ReadFile { output, .. }
-                | ReadSocket { output, .. }
                 | ReadStdin { output, .. } => {
                     vec![("output", Some(output.clone()))]
                 }
-                WriteFile { .. } | WriteSocket { .. } | WriteStderr { .. } | WriteStdout { .. } => {
+                WriteFile { .. } | WriteStderr { .. } | WriteStdout { .. } => {
                     vec![]
                 }
+                #[cfg(feature = "serde")]
+                ReadSocket { output, .. } => {
+                    vec![("output", Some(output.clone()))]
+                }
+                #[cfg(feature = "serde")]
+                WriteSocket { .. } => vec![],
             }
         }
     }
@@ -131,6 +144,7 @@ pub mod sys {
                 ReadDir { .. } => Box::new(super::ReadDir::with_system(system)),
                 ReadEnv { .. } => Box::new(super::ReadEnv::<String>::with_system(system)),
                 ReadFile { .. } => Box::new(super::ReadFile::with_system(system)),
+                #[cfg(feature = "serde")]
                 ReadSocket { config, .. } => {
                     Box::new(super::ReadSocket::with_system(system, Some(config.clone())))
                 }
@@ -138,6 +152,7 @@ pub mod sys {
                     Box::new(super::ReadStdin::with_system(system, *buffer_size))
                 }
                 WriteFile { flags, .. } => Box::new(super::WriteFile::with_system(system, *flags)),
+                #[cfg(feature = "serde")]
                 WriteSocket { config, .. } => Box::new(super::WriteSocket::with_system(
                     system,
                     Some(config.clone()),
@@ -157,7 +172,9 @@ pub mod sys {
     mod read_file;
     pub use read_file::*;
 
+    #[cfg(feature = "serde")]
     mod read_socket;
+    #[cfg(feature = "serde")]
     pub use read_socket::*;
 
     mod read_stdin;
@@ -166,7 +183,9 @@ pub mod sys {
     mod write_file;
     pub use write_file::*;
 
+    #[cfg(feature = "serde")]
     mod write_socket;
+    #[cfg(feature = "serde")]
     pub use write_socket::*;
 
     mod write_stderr;

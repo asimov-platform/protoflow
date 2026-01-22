@@ -3,13 +3,16 @@
 name: CI
 
 on:
-  pull_request:
+  pull_request_target:
     types: [opened, synchronize, reopened]
+
+permissions:
+  contents: read
     
 jobs:
   check-formatting:
     name: Check formatting
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -31,7 +34,7 @@ jobs:
         include:
           - name: Linux
             target: x86_64-unknown-linux-gnu
-            os: ubuntu-latest
+            os: ubuntu-24.04
           # - name: macOS
           #   target: x86_64-apple-darwin
           #   os: macos-latest
@@ -55,6 +58,11 @@ jobs:
           toolchain: 1.81.0
           components: rustfmt
           targets: ${{ matrix.target }}
+      - name: Install protoc
+        uses: arduino/setup-protoc@v3
+        with:
+          version: "29.1"
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
       - name: Build library
         id: check-lib
         if: ${{ always() }}
@@ -75,15 +83,21 @@ jobs:
         id: run-tests
         if: ${{ steps.check-tests.outcome == 'success' }}
         run: |
-          cargo +${{ steps.install-rust.outputs.name }} test --target ${{ matrix.target }} --workspace --test "*" --no-fail-fast
+          cargo +${{ steps.install-rust.outputs.name }} test --target ${{ matrix.target }} --workspace --tests --no-fail-fast
+      - name: Run doctests
+        id: run-doctests
+        if: ${{ steps.check-tests.outcome == 'success' }}
+        run: |
+          cargo +${{ steps.install-rust.outputs.name }} test --target ${{ matrix.target }} --workspace --doc --no-fail-fast
   review-pr:
     name: Review PR
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     if: ${{ always() }}
     needs:
       - check-formatting
       - check-targets
     permissions:
+      contents: read
       pull-requests: write
     steps:
       - uses: actions/github-script@v7

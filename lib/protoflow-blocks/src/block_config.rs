@@ -30,12 +30,6 @@ pub enum BlockConfig {
         feature = "hash-sha1",
         feature = "hash-sha2"
     ))]
-    #[cfg(any(
-        feature = "hash-blake3",
-        feature = "hash-md5",
-        feature = "hash-sha1",
-        feature = "hash-sha2"
-    ))]
     Hash(HashBlockConfig),
     Io(IoBlockConfig),
     Math(MathBlockConfig),

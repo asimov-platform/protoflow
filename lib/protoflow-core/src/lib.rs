@@ -95,3 +95,23 @@ pub(crate) mod utils {
 pub use prost_types as types;
 
 pub use prost::DecodeError;
+
+#[cfg(feature = "tracing")]
+#[doc(hidden)]
+mod tracing {
+    pub use tracing::{debug, error, info, trace, warn};
+}
+
+#[cfg(not(feature = "tracing"))]
+#[doc(hidden)]
+#[rustfmt::skip]
+mod tracing {
+    #[macro_export] macro_rules! debug { ($($arg:tt)+) => (); }
+    #[macro_export] macro_rules! error { ($($arg:tt)+) => (); }
+    #[macro_export] macro_rules! info { ($($arg:tt)+) => (); }
+    #[macro_export] macro_rules! trace { ($($arg:tt)+) => (); }
+    #[macro_export] macro_rules! warn { ($($arg:tt)+) => (); }
+}
+
+#[allow(unused)]
+pub use tracing::*;

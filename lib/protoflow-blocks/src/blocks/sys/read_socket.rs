@@ -5,7 +5,8 @@ use crate::{
     StdioConfig, StdioError, StdioSystem, System,
 };
 use protoflow_core::{
-    Block, BlockError, BlockResult, BlockRuntime, OutputPort, Port, PortResult, SystemBuilding,
+    error, info, Block, BlockError, BlockResult, BlockRuntime, OutputPort, Port, PortResult,
+    SystemBuilding,
 };
 use protoflow_derive::Block;
 use serde::{Deserialize, Serialize};
@@ -16,7 +17,6 @@ use std::{
     net::{TcpListener, TcpStream},
     sync::{Arc, Mutex, PoisonError},
 };
-use tracing::{error, info};
 
 /// A block that reads a proto object from a TCP port.
 ///
@@ -117,7 +117,6 @@ impl Block for ReadSocket {
                 error!("Failed to accept client connection: {}", e);
                 BlockError::Other("Failed to accept client connection".into())
             })?;
-
             info!("Accepted connection from {}", addr);
             *stream_guard = Some(stream);
         }

@@ -83,7 +83,12 @@ jobs:
         id: run-tests
         if: ${{ steps.check-tests.outcome == 'success' }}
         run: |
-          cargo +${{ steps.install-rust.outputs.name }} test --target ${{ matrix.target }} --workspace --test "*" --no-fail-fast
+          cargo +${{ steps.install-rust.outputs.name }} test --target ${{ matrix.target }} --workspace --tests --no-fail-fast
+      - name: Run doctests
+        id: run-doctests
+        if: ${{ steps.check-tests.outcome == 'success' }}
+        run: |
+          cargo +${{ steps.install-rust.outputs.name }} test --target ${{ matrix.target }} --workspace --doc --no-fail-fast
   review-pr:
     name: Review PR
     runs-on: ubuntu-24.04

@@ -2,7 +2,7 @@
 
 pub mod core {
     use super::{
-        prelude::{vec, Box, Cow, Named, Vec},
+        prelude::{vec, Box, Bytes, Cow, Named, Vec},
         BlockConnections, BlockInstantiation, InputPortName, OutputPortName, System,
     };
     use crate::{
@@ -13,6 +13,8 @@ pub mod core {
 
     pub trait CoreBlocks {
         fn buffer<T: Message + Into<T> + 'static>(&mut self) -> Buffer<T>;
+
+        fn const_bytes<T: Into<Bytes>>(&mut self, value: T) -> Const<Bytes>;
 
         fn const_string(&mut self, value: impl ToString) -> Const<String>;
 

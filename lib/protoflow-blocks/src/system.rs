@@ -100,8 +100,12 @@ impl fmt::Debug for System {
 }
 
 impl SystemExecution for System {
+    fn prepare(&self) -> BlockResult<()> {
+        SystemExecution::prepare(&self.0)
+    }
+
     fn execute(self) -> BlockResult<Rc<dyn Process>> {
-        self.0.execute()
+        SystemExecution::execute(self.0)
     }
 }
 
@@ -125,6 +129,10 @@ impl SystemBuilding for System {
 
     fn connect<M: Message>(&mut self, source: &OutputPort<M>, target: &InputPort<M>) -> bool {
         self.0.connect(source, target)
+    }
+
+    fn validate(&self) -> BlockResult<()> {
+        self.0.validate()
     }
 }
 

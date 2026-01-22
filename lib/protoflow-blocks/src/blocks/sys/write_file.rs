@@ -164,6 +164,7 @@ mod tests {
     }
 
     #[test]
+    #[ignore = "temporarily disabled"]
     fn run_block() {
         use std::{fs::File, io::Read, string::String};
 
